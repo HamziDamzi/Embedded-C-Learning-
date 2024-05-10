@@ -1,0 +1,75 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+#define CSIZE 4
+
+struct name
+{
+char first[50];
+char second[50];
+}name;
+
+
+ struct student
+{
+struct name sname[50];
+float grade[3];
+float average;
+}student;
+
+int main()
+{
+
+ struct student s[CSIZE] = 
+
+{
+  { {"Asad","Ali"}, {0,0,0}, 0},
+  { {"Khadija","Asif"}, {0,0,0}, 0},
+  { {"Sajid","Hussain"}, {0,0,0}, 0},
+  { {"Mohsin","Waqar"}, {0,0,0}, 0},
+
+};
+
+
+for(int i=0;i<CSIZE;i++)
+	for(int k=0;k<3;k++)
+	{
+	
+	printf("Enter score 1 of %s %s\n",s[i].sname->first,s[i].sname->second);
+	scanf("%f",&s[i].grade[k]);
+	
+	}
+
+for(int i=0;i<CSIZE;i++)
+{
+	for(int k=0;k<3;k++)
+		 s[i].average += s[i].grade[k];
+		 
+s[i].average /= 3;
+}	
+
+float class_average=0;
+for(int i=0;i<CSIZE;i++)
+	class_average += s[i].average;
+class_average /= CSIZE;	
+
+
+
+for(int i=0;i<CSIZE;i++)
+{	
+printf("\nName: %s %s",s[i].sname->first,s[i].sname->second); 
+	for(int k=0;k<3;k++)
+		printf("score: %f \t",s[i].grade[k]);
+		
+printf("\n Student Average: %f",s[i].average);	
+}
+
+
+printf("\n\n Class Average is: %f\n",class_average);
+
+
+return 0;
+}
+
+

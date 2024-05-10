@@ -1,0 +1,130 @@
+/*1. Write a program that prompts the user to enter the day, month, and year.
+The month can be a month number, a month name, or a month abbreviation.
+The program then should return the total number of days in the year up through the
+given day.
+Do take leap years into account.*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+typedef struct month {
+	char Fullname[50];
+	char Month[50];
+	int days;
+	int month_id;} month;
+
+int found=0;
+int leapyear=0;
+void printmonth (month months)
+{  printf( "month Fullname : %s\n", months.Fullname);
+   printf( "month Month : %s\n", months.Month);
+   printf( "month days : %d\n", months.days);
+   printf( "month month_id : %d\n", months.month_id);
+
+}
+
+/* month specification*/
+
+month months[12] = {
+    {"January","jan",31,1},
+    {"February","feb",28,2},
+    {"March","mar",31,3},
+    {"April","apr",30,4},
+    {"May","may",31,5},
+    {"June","jun",30,6},
+    {"July","jul",31,7},
+    {"August","aug",31,8},
+    {"September","sep",30,9},
+    {"October","oct",31,10},
+    {"November","nov",30,11},
+    {"December","dec",31,12}
+
+};
+
+
+
+
+int main(int argc, char* argv[] ){
+
+
+    char *monthname;
+    int monthnum;
+    int dayy;
+    int yearr;
+    if(argv[1])
+    dayy=*argv[1];
+
+    if(argv[1]==NULL){
+    printf("Please enter the day to search:\n");
+    scanf("%d", &dayy);
+    }
+
+        
+    if(argv[2]){
+    int size= strlen(argv[2]);
+    monthname = (char *) malloc(size);
+    strcpy(monthname,argv[2]);
+    }
+
+    if (argv[1]==NULL)
+    {
+        char userinput[10];
+        printf("Please enter the Month to search:\n");
+        scanf("%s", userinput);
+        monthname = (char *) malloc(strlen(userinput));
+        strcpy(monthname,userinput);
+    }
+
+    if(argv[3]){
+    yearr= *argv[3];
+    }
+    
+    if(argv[1]==NULL){
+        printf("Please enter the year to search:\n");
+        scanf("%d", &yearr);
+        }
+
+
+    for(int i=0; i<12 ; i++){
+	    if(strcmp(months[i].Fullname, monthname)==0)
+		    {
+                printmonth (months[i]);
+                monthnum = months[i].month_id;
+		        found=1;}
+                }
+       	
+    if(!found){printf("no matches found\n");}
+	else{
+        int daysofyear=0;
+        int fleapyear;
+
+        if((yearr%4)==0)
+            {
+                fleapyear=1;
+                
+                if ((yearr%100)==0)
+                    {fleapyear=0;
+                    if((leapyear%400)==0)
+                        fleapyear=1;}
+            }
+
+        else{
+                fleapyear=0;
+            }
+
+        for(int j=0;j<(monthnum-1); j++)
+        {
+            daysofyear=daysofyear+months[j].days;
+        }
+
+            if (fleapyear==1&&(monthnum>2))
+                daysofyear=daysofyear +1;
+            
+
+        daysofyear=daysofyear + dayy;
+        printf("days in year %d which is (%d) = %d",yearr,fleapyear,daysofyear);
+    }   
+
+		
+	return 0;
+}

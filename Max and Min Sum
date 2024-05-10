@@ -1,0 +1,41 @@
+#include<stdio.h>
+#include<math.h>
+ int main ()
+ {
+      long int  num[5],sum[5]={ 0,0,0,0,0} ,max=0, min;
+      int i,j;
+      printf("Enter 5 Integers to find the Max and Min Sum: \n");
+      for ( i = 0; i < 5; i++)
+      {
+          scanf("%ld",&num[i]);
+      }
+      for ( i = 0; i < 5; i++)
+      {
+          for ( j = 0; j < 5; j++)
+          {
+              if ( i!= j )
+              {
+                  sum[i]=sum[i]+ num[j];
+              }
+              
+          }
+          if ( sum[i]>= max )
+          {
+              max=sum[i];
+          }
+       
+      }
+        min=max;
+      for ( i = 0; i < 5; i++)
+      {
+           
+          if ( sum[i]<= min )
+          {
+              min=sum[i];
+          }
+      }
+      
+      printf("%ld %ld",min,max);
+      
+      
+ }

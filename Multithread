@@ -1,0 +1,96 @@
+/*Develop a multithreaded program that randomly initializes a matrix and vector of given dimensions and solves the matrix-vector problem. Save the final result in a file*/
+#include <stdlib.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <fcntl.h>
+//Open files matrix.txt, vector.txt and know n and m before running program
+#define n 3 //number of rows of matrix
+#define m 4 //number of columns matrix
+#define o m //number of rows of vector
+
+pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
+FILE *fd;
+struct tData{
+	int thread_id;
+	long matrix[n][m];
+	long vector[m];
+}td[n];
+	
+void *MULTIPLYMV(void *threadarg){
+	int tid;
+	long r;
+	struct tData *my=(struct tData*)threadarg;
+	long *ptr = (long*)malloc(sizeof(long));
+	pthread_mutex_lock(&mutex);
+	tid = my->thread_id;
+	for(int k=0; k<m; ++k){
+		r += my->matrix[tid][k]*my->vector[k];
+	}
+	*ptr = r;
+	printf("Hey there! It's me, thread # %d\nI computed element %d of product which is %ld\n\n", tid, tid, r);
+	pthread_mutex_unlock(&mutex);
+	pthread_exit(ptr);
+}
+
+int main(){
+	pthread_t threads[n];
+	long matA[n][m], vectb[m], num;
+	//Accessing file matrix.txt and storing value in matA
+	fd = fopen("matrix.txt", "r");
+	for(int i=0; i<n; ++i){
+		for(int j=0; j<m; ++j){
+			fscanf(fd, "%ld", &num);
+			matA[i][j] = num;
+		}
+	}
+	fclose(fd);
+	//Accessing file vector.txt and storing the value in matrixB
+	fd = fopen("vector.txt", "r");
+	for(int j=0; j<m; ++j){
+		fscanf(fd, "%ld", &num);
+		vectb[j]=num;
+	}
+	fclose(fd);
+	int rc, t;
+	for(t=0; t<n; ++t){
+		printf("In main: creating thread %d\n", t);
+		td[t].thread_id=t;
+		for(int i=0; i<n; ++i){
+			for(int j=0; j<m; ++j){
+				td[t].matrix[i][j]=matA[i][j];
+				//printf("[%ld] ",td[t].matrix[i][j]); //print for check and debugging
+			}
+			printf("\n");
+		}
+		for(int j=0; j<m; ++j){
+			td[t].vector[j]=vectb[j];
+			//printf("%ld\n",td[t].vector[j]); //print for check and debugging
+		}
+		rc = pthread_create(&threads[t], NULL, MULTIPLYMV, (void *)&td[t]);
+		if(rc){
+			printf("ERROR; return code from pthread_create() is %d\n", rc);
+			exit(-1);
+		}
+	}
+	
+	if(m != o){
+	 	printf("Matix-vector Multiplication is not possible due to dimension conflicts\n");
+	}
+	else{
+		void *r;
+		long *ptr, res[n];
+		for(int k=0; k<n; ++k){
+			pthread_join(threads[k], &r);
+			ptr = (long *)r;
+			res[k]=*ptr;
+		}
+	 	fd = fopen("results.txt", "w");
+	 	for(int i=0; i<n; ++i){
+	 		fprintf(fd, "%ld ", res[i]);
+	 		fprintf(fd, "\n");
+	 	}
+	 	fclose(fd);
+	 	printf("Resultant vector stored in results.txt\nPlease check the file results.txt\n");
+	}	
+	pthread_exit(NULL);
+}

@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+int main(int argc, char* argv[]){
+	int fd;
+	char *pat;
+	pat=(char*)malloc(strlen(argv[1]+3));
+	strcpy(pat,"../");
+	strcat(pat,argv[1]);
+	fd=open(pat,O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+	close(fd);
+	return 0;
+}

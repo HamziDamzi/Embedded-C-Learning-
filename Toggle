@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <math.h>
+void printToBin(unsigned n)
+{
+    if (n > 1)
+        printToBin(n >> 1);
+
+    printf("%u", n & 1);
+}
+int main(){
+	int nthbit;
+	unsigned int num;
+	printf("Enter the number: ");
+	scanf("%u",&num);
+	printf("Binary: ");
+	printToBin(num);
+	printf("\ndec: %u\n",num);
+
+	printf("\nHex: %x\n",num);
+	printf("Bit number to toggle: \n");
+	scanf("%d",&nthbit);
+	num=num^(1<<(nthbit-1));
+
+	printf("Binary: ");
+	printToBin(num);
+	printf("\nHex: %x\n",num);
+	printf("\ndec: %u\n",num);
+
+	return 0;
+}
